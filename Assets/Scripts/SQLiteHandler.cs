@@ -4,15 +4,24 @@ using UnityEngine;
 
 public class SQLiteHandler : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private string dbPath = "";
 
-    // Update is called once per frame
-    void Update()
+    private void Awake()
     {
-        
+        if (dbPath == "")
+        {
+            dbPath = "URI=file:" + Application.dataPath + "/Resources/pubgDb.db";
+
+#if UNITY_STANDALONE && !UNITY_EDITOR
+            dbPath = "URI=file:" + Application.dataPath + "/pubgDb.db";
+#endif
+
+            CreateDBSchema();
+        }
+
+        void CreateDBSchema()
+        {
+
+        }
     }
 }
