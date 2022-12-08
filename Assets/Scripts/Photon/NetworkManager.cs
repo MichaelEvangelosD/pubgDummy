@@ -69,6 +69,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         ActivatePanel(Connect_UI_Panel.name);
         if (!string.IsNullOrEmpty(playerName))
         {
+
             PhotonNetwork.LocalPlayer.NickName = playerName;
             PhotonNetwork.ConnectUsingSettings();
         }
