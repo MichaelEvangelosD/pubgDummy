@@ -7,14 +7,23 @@ using System.Collections.Generic;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
+    [Header("Server script")]
+    public ServerHandler serverHandler;
+
     [Header("Connection Status")]
     public Text connectionStatusText;
 
     [Header("Connecting UI Panel")]
     public GameObject Connect_UI_Panel;
 
+    [Header("Register UI Panel")]
+    public InputField register_playerNameInput;
+    public InputField register_playerPassInput;
+    public GameObject Register_UI_Panel;
+
     [Header("Login UI Panel")]
-    public InputField playerNameInput;
+    public InputField login_playerNameInput;
+    public InputField login_playerPassInput;
     public GameObject Login_UI_Panel;
 
     [Header("Game Options UI Panel")]
@@ -48,7 +57,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     #region Unity Methods
     private void Start()
     {
-        ActivatePanel(Login_UI_Panel.name);
+        ActivatePanel(Register_UI_Panel.name);
 
         PhotonNetwork.AutomaticallySyncScene = true;
 
@@ -63,12 +72,33 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     #endregion
 
     #region UI Callbacks
-    public void OnLoginButtonClicked()
+    public void OnRegisterButtonClicked()
     {
-        string playerName = playerNameInput.text;
-        ActivatePanel(Connect_UI_Panel.name);
+        string playerName = register_playerNameInput.text;
+        string playerPass = register_playerPassInput.text;
+        ActivatePanel(Login_UI_Panel.name);
+
         if (!string.IsNullOrEmpty(playerName))
         {
+            serverHandler.InitiateRegister(playerName, playerPass);
+        }
+        else
+        {
+            Debug.Log("Player input is invalid.");
+        }
+    }
+
+    public void OnLoginButtonClicked()
+    {
+        string playerName = login_playerNameInput.text;
+        string playerPass = login_playerPassInput.text;
+        ActivatePanel(Connect_UI_Panel.name);
+
+        if (!string.IsNullOrEmpty(playerName))
+        {
+            serverHandler.InitiateLogin(playerName, playerPass);
+
+            //TODO - check for result of registration and login
 
             PhotonNetwork.LocalPlayer.NickName = playerName;
             PhotonNetwork.ConnectUsingSettings();
@@ -320,6 +350,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     #region Public Methods
     public void ActivatePanel(string panelToBeActivated)
     {
+        Register_UI_Panel.SetActive(panelToBeActivated.Equals(Register_UI_Panel.name));
         Login_UI_Panel.SetActive(panelToBeActivated.Equals(Login_UI_Panel.name));
         Connect_UI_Panel.SetActive(panelToBeActivated.Equals(Connect_UI_Panel.name));
         GameOptions_UI_Panel.SetActive(panelToBeActivated.Equals(GameOptions_UI_Panel.name));
