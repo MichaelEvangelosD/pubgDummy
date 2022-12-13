@@ -93,6 +93,7 @@ public class SpawnManager : MonoBehaviourPunCallbacks
         while (true)
         {
             yield return new WaitForSeconds(waitTime);
+            Respawner();
         }
     }
 }
